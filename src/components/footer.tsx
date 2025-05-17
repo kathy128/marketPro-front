@@ -9,7 +9,7 @@ const Footer = () => {
         <>
             <footer className="bg-blue-950 text-white pt-12 pb-6">
                 <div className="container mx-auto px-4">
-                    <div className="grid md:grid-cols-4 gap-8 mb-8">
+                    <div className="grid md:grid-cols-3 gap-8 mb-8">
                         <div>
                             <div className="flex items-center space-x-2 mb-4">
                                 <FaStore style={iconStyles} />
@@ -23,24 +23,6 @@ const Footer = () => {
                                 <a href="https://github.com/kathy128" className="text-secondary-300 hover:text-white transition"><FaGithub style={iconStyles}/></a>
                             </div>
                         </div>
-
-                        <div>
-                            <h3 className="font-semibold text-lg mb-4">Producto</h3>
-                            <ul className="space-y-2">
-                                <li><a href="#"
-                                       className="text-secondary-300 hover:text-white transition">Características</a>
-                                </li>
-                                <li><a href="#" className="text-secondary-300 hover:text-white transition">Precios</a>
-                                </li>
-                                <li><a href="#"
-                                       className="text-secondary-300 hover:text-white transition">Integraciones</a>
-                                </li>
-                                <li><a href="#"
-                                       className="text-secondary-300 hover:text-white transition">Actualizaciones</a>
-                                </li>
-                            </ul>
-                        </div>
-
                         <div>
                             <h3 className="font-semibold text-lg mb-4">Recursos</h3>
                             <ul className="space-y-2">

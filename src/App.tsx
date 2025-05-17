@@ -4,25 +4,34 @@ import Home from './pages/home/home';
 import Navbar from './components/navbar';
 import Footer from './components/footer';
 import RegisterPage from './pages/auth/registerPage';
-import { ToastContainer, toast } from 'react-toastify';
+import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Login from './pages/auth/login';
+import ProductPage from './pages/products/productsPage';
+import {Provider} from 'react-redux';
+import {store} from './store/configStore';
+import CartModal from './components/modal/cartModal';
 
 function App() {
-    const notify = () => toast("This is a toast notification !");
     return (
         <>
-            <BrowserRouter>
-                <Navbar/>
-                <Routes>
-                    <Route path="/" element={<Home/>}/>
-                    <Route
-                        path="/register"
-                        element={<RegisterPage type="register" />}
-                    />
-                </Routes>
-                <Footer/>
-            </BrowserRouter>
-            <ToastContainer></ToastContainer>
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Navbar/>
+                    <CartModal />
+                    <Routes>
+                        <Route path="/" element={<Home/>}/>
+                        <Route path="/login" element={<Login type="login"/>}/>
+                        <Route
+                            path="/register"
+                            element={<RegisterPage type="register"/>}
+                        />
+                        <Route path="/products" element={<ProductPage/>}/>
+                    </Routes>
+                    <Footer/>
+                </BrowserRouter>
+                <ToastContainer></ToastContainer>
+            </Provider>
         </>
     )
 }

@@ -2,13 +2,15 @@ import React, {useState} from 'react';
 import {FaBoxes, FaEnvelope, FaEye, FaLock, FaSignInAlt, FaUser} from 'react-icons/fa';
 import InputField from '../../components/input/input';
 import {toast} from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import ButtonWithIcon from '../../components/button';
 
 const RegisterPage = () => {
     let iconStyles = {color: "#0284C7", fontSize: "1rem"};
     const nameRegex = /^[A-Za-z\s]+$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
         name: "",
@@ -65,15 +67,17 @@ const RegisterPage = () => {
         } else {
             setErrors(formErrors);
             toast.error('Por favor corrige los errores antes de enviar.');
+            return;
         }
         if (formData.password !== formData.confirmPassword) {
             toast.error('Las contraseñas no coinciden')
             return;
         }
+        navigate("/");
     };
 
     return (
-        <div className="min-h-screen gradient-bg flex items-center justify-center p-4">
+        <div className="min-h-screen gradient-bg flex items-center justify-center p-8">
             <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
                 <div className="bg-primary-700 p-2 text-white">
                     <div className="flex items-center justify-between">
@@ -170,15 +174,17 @@ const RegisterPage = () => {
                             </div>
                         </div>
                         <div>
-                            <button type="submit"
-                                    className="gap-4 w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-700 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-all duration-200">
-                                <FaSignInAlt style={{color: "white", fontSize: "1rem"}}/><p>Registrar</p>
-                            </button>
+                            <ButtonWithIcon
+                                icon={<FaSignInAlt style={{ color: 'white', fontSize: "1rem" }} />}
+                                text="Ingresar"
+                                width="w-full"
+                                type="submit"
+                            />
                         </div>
 
                     </form>
                     <div className="mt-6 text-center text-sm text-secondary-500">
-                        ¿Ya tienes una cuenta? <a href="#"
+                        ¿Ya tienes una cuenta? <a href="/login"
                                                   className="font-medium text-primary-600 hover:text-primary-500">Inicia
                         sesión</a>
                     </div>

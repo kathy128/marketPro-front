@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FaLock, FaEye, FaEyeSlash} from 'react-icons/fa';
+import {FaEye, FaEyeSlash} from 'react-icons/fa';
 
 const InputField = ({
                         iconStart,
@@ -36,7 +36,7 @@ const InputField = ({
                     value={value}
                     onChange={onChange}
                     required
-                    className={`pl-10 w-full rounded-lg border border-secondary-300 px-4 py-2 input-focus-effect transition-all duration-200 focus:outline-none ${className}`}
+                    className={`${iconStart?"pl-10":""} w-full rounded-lg border focus:border px-4 py-2 hover:border-sky-700 focus:outline-none focus:ring focus:ring-sky-500/50 focus:border-sky-500 transition-all duration-200 ${className}`}
                     placeholder={placeholder}
                     {...props}
                 />

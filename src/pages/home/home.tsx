@@ -8,14 +8,16 @@ const Home = () => {
     return (
         <>
             <section className="py-12 md:py-20 bg-gradient-to-r from-sky-700 to-sky-400 text-white">
-                <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
+                <div className="container mx-auto px-10 flex flex-col md:flex-row items-center">
                     <div className="md:w-1/2 mb-10 md:mb-0">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">Descubre productos increíbles</h1>
                         <p className="text-xl mb-8 opacity-90">La forma más simple de comprar y vender en línea.</p>
-                        <button
-                            className="px-6 py-3 bg-white text-sky-600 font-medium rounded-lg hover:bg-gray-100 transition shadow-lg flex items-center gap-2">
-                            <FaSearch style={iconStyles}/><span>Explorar ahora</span>
-                        </button>
+                        <a href={'/products'}>
+                            <button
+                                className="px-6 py-3 bg-white text-sky-600 font-medium rounded-lg hover:bg-gray-100 transition shadow-lg flex items-center gap-2">
+                                <FaSearch style={iconStyles}/><span>Explorar ahora</span>
+                            </button>
+                        </a>
                     </div>
                     <div className="md:w-1/2 flex justify-center">
                         <img
