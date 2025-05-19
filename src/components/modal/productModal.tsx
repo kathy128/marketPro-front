@@ -6,7 +6,7 @@ const ProductModal = ({isOpen, onClose, onSubmit, initialData = null}) => {
     const [form, setForm] = useState({
         name: '',
         sku: '',
-        quantity: '',
+        stock: '',
         price: '',
         image: null,
     });
@@ -16,7 +16,7 @@ const ProductModal = ({isOpen, onClose, onSubmit, initialData = null}) => {
             setForm({
                 name: initialData.name || '',
                 sku: initialData.sku || '',
-                quantity: initialData.stock || '',
+                stock: initialData.stock || '',
                 price: initialData.price || '',
                 image: null,
             });
@@ -34,15 +34,7 @@ const ProductModal = ({isOpen, onClose, onSubmit, initialData = null}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(form);
-        onClose();
-        setForm({
-            name: '',
-            sku: '',
-            quantity: '',
-            price: '',
-            image: null,
-        })
+        onSubmit(form, initialData === null);
     };
     return (
         <Transition appear show={isOpen}>
@@ -93,9 +85,9 @@ const ProductModal = ({isOpen, onClose, onSubmit, initialData = null}) => {
                                             <label className="block text-sm font-medium text-gray-700">Cantidad</label>
                                             <InputField
                                                 type="number"
-                                                value={form.quantity}
+                                                value={form.stock}
                                                 onChange={handleChange}
-                                                name="quantity"
+                                                name="stock"
                                             />
                                         </div>
 

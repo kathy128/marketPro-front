@@ -1,4 +1,5 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
 interface ButtonIconsProps {
     href?: string;
     icon: React.ReactNode;
@@ -10,20 +11,27 @@ interface ButtonIconsProps {
 }
 
 const ButtonWithIcon: React.FC<ButtonIconsProps> = ({
-   href = "",
-   icon,
-   text = "Text",
-   width = "w-fit",
-   className = "",
+    href = "",
+    icon,
+    text = "Text",
+    width = "w-fit",
+    buttonColor = "bg-sky-700 hover:bg-sky-800",
+    className = "",
     type = "button",
     buttonType = "button",
     onClick
    }) => {
-    const baseClass = `cursor-pointer px-4 py-2 bg-sky-700 justify-center items-center text-white text-sm font-medium rounded-lg hover:bg-sky-800 transition flex items-center gap-2 ${width} ${className}`
+    const navigate = useNavigate();
+    const baseClass = `${buttonColor} cursor-pointer px-4 py-2 b justify-center items-center text-white text-sm font-medium rounded-lg  transition flex items-center gap-2 ${width} ${className}`
     const textButtonClass = `cursor-pointer py-2 justify-center items-center text-sm font-medium rounded-lg transition flex items-center gap-2 ${width} ${className}`
     if (href) {
         return (
-            <a href={href} className={buttonType === "button" ? baseClass : textButtonClass}>
+            <a onClick={() => {
+                if (onClick) {
+                    onClick();
+                }
+                navigate(`${href}`);
+            }} className={buttonType === "button" ? baseClass : textButtonClass}>
                 {icon}
                 <span>{text}</span>
             </a>

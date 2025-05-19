@@ -1,12 +1,16 @@
 import React from 'react';
 import ProductCard from '../../components/productCard';
 import InputField from '../../components/input/input';
-import {FaHashtag, FaPerbyte, FaPlus, FaSearch} from 'react-icons/fa';
+import {FaHashtag, FaPlus, FaSearch} from 'react-icons/fa';
 import ButtonWithIcon from '../../components/button';
 import ProductModal from '../../components/modal/productModal';
 import {addToCart} from '../../store/slices/cartSlice';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import type {AppDispatch} from '../../store/configStore';
+import {toast} from "react-toastify";
+import {createProduct, getProducts, removeProduct, updateProduct} from '../../services/productService';
+import {userData} from '../../store/selectors/userSelector';
+import {getSellers} from '../../services/userService';
 
 const {useState, useEffect} = React;
 
@@ -14,122 +18,62 @@ const ProductPage = () => {
     let iconStyles = {color: "#A2A9B4", fontSize: "1rem"};
     const dispatch = useDispatch<AppDispatch>();
     const [products, setProducts] = useState([]);
+    const [sellers, setSellers] = useState([]);
+    const [fetchingProducts, setFetchProducts] = useState(false);
+    const [fetchingSellers, setFetchSeller] = useState(false);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [priceRange, setPriceRange] = useState([0, 1000]);
     const [sortOption, setSortOption] = useState('select');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentProduct, setCurrentProduct] = useState< | null>(null);
+    const {user} = useSelector(userData);
+    const [refreshProducts, setRefreshProducts] = useState(false);
     const [searchTerm, setSearchTerm] = useState({
         name: '',
         quantity: '',
         sku: '',
     });
-    const roleType = ''
-    useEffect(() => {
-        const fetchProducts = async () => {
+    const fetchProducts = async (extraUrl) => {
+        if (!fetchingProducts) {
+            setFetchProducts(true);
             setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 800));
-            const mockProducts = [
-                {
-                    id: 1,
-                    sku: '4',
-                    name: 'Smartphone X',
-                    price: 599.99,
-                    category: 'electronics',
-                    rating: 4.5,
-                    image: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/d6202f062d4659943ebf353d99e4c219.jpg',
-                    featured: true,
-                    stock: 15
-                },
-                {
-                    id: 2,
-                    sku: '5',
-                    name: 'Laptop Pro',
-                    price: 1299.99,
-                    category: 'electronics',
-                    rating: 4.8,
-                    image: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/d6202f062d4659943ebf353d99e4c219.jpg',
-                    featured: true,
-                    stock: 8
-                },
-                {
-                    id: 3,
-                    sku: '3',
-                    name: 'Camiseta Básica',
-                    price: 19.99,
-                    category: 'clothing',
-                    rating: 4.2,
-                    image: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/d6202f062d4659943ebf353d99e4c219.jpg',
-                    featured: false,
-                    stock: 42
-                },
-                {
-                    id: 4,
-                    sku: '7',
-                    name: 'Libro de Cocina',
-                    price: 24.99,
-                    category: 'books',
-                    rating: 4.7,
-                    image: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/d6202f062d4659943ebf353d99e4c219.jpg',
-                    featured: true,
-                    stock: 23
-                },
-                {
-                    id: 5,
-                    sku: '8',
-                    name: 'Sofá Moderno',
-                    price: 799.99,
-                    category: 'home',
-                    rating: 4.3,
-                    image: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/d6202f062d4659943ebf353d99e4c219.jpg',
-                    featured: false,
-                    stock: 5
-                },
-                {
-                    id: 6,
-                    sku: '9',
-                    name: 'Zapatillas Running',
-                    price: 89.99,
-                    category: 'sports',
-                    rating: 4.6,
-                    image: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/d6202f062d4659943ebf353d99e4c219.jpg',
-                    featured: true,
-                    stock: 17
-                },
-                {
-                    id: 7,
-                    sku: '2',
-                    name: 'Auriculares Inalámbricos',
-                    price: 149.99,
-                    category: 'electronics',
-                    rating: 4.4,
-                    image: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/d6202f062d4659943ebf353d99e4c219.jpg',
-                    featured: false,
-                    stock: 31
-                },
-                {
-                    id: 8,
-                    sku: '1',
-                    name: 'Juego de Sartenes',
-                    price: 69.99,
-                    category: 'home',
-                    rating: 4.1,
-                    image: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/d6202f062d4659943ebf353d99e4c219.jpg',
-                    featured: false,
-                    stock: 12
-                },
-            ];
-            setProducts(mockProducts);
-            setFilteredProducts(mockProducts);
+            let products = await getProducts(extraUrl);
+            setProducts(products);
+            setFilteredProducts(products);
             setLoading(false);
-        };
+            setFetchProducts(false);
+        }
+    };
 
-        fetchProducts();
-    }, []);
+    useEffect(() => {
+        const fetchSellers = async () => {
+            if (!fetchingSellers) {
+                setLoading(true);
+                setFetchSeller(true);
+                let sellers = await getSellers();
+                setSellers(sellers);
+                setLoading(false);
+                setFetchSeller(false);
+            }
+        }
+        if (user) {
+            fetchProducts(user.role === "seller" ? `/seller/${user.id}` : "");
+            if (user.role === "admin") {
+                fetchSellers();
+            }
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (!fetchingProducts && user) {
+            fetchProducts(user.role === "seller" ? `/seller/${user.id}` : "");
+        }
+    }, [refreshProducts]);
 
     useEffect(() => {
         let result = [...products];
+
         result = result.filter(product =>
             product.price >= priceRange[0] && product.price <= priceRange[1]
         );
@@ -160,12 +104,15 @@ const ProductPage = () => {
                 result.sort((a, b) => (b.featured === a.featured) ? 0 : b.featured ? -1 : 1);
                 break;
             default:
+                const sellerId = Number(sortOption);
+                if (!isNaN(sellerId)) {
+                    result = result.filter((product) => product.sellerId === sellerId);
+                }
                 break;
         }
 
         setFilteredProducts(result);
     }, [products, priceRange, searchTerm, sortOption]);
-
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setSearchTerm({
@@ -180,18 +127,55 @@ const ProductPage = () => {
         setPriceRange(newPriceRange);
     };
 
-    const handleSubmit = (data) => {
+    const handleSubmit = async (data, isCreate) => {
         console.log('Producto enviado:', data);
+        try {
+            let res;
+            if (isCreate) {
+                res = await createProduct({
+                    ...data,
+                    sellerId: user.id
+                });
+            } else {
+                res = await updateProduct(currentProduct.id, {
+                    ...data,
+                    sellerId: user.id
+                });
+            }
+            if (!res.error) {
+                toast.success(`Se ${isCreate ? "creó" : "actualizó"} correctamente el producto [${res.name}]`);
+                setRefreshProducts(!refreshProducts);
+                setIsModalOpen(false);
+                setCurrentProduct(null);
+            } else {
+                throw new Error(res.error);
+            }
+        } catch (e) {
+            console.error(e);
+        }
     };
 
-    const handleButtonCard = (data) => {
-        if(roleType === 'seller'){
+    const handleRemoveItem = async (product) => {
+        console.log(product);
+        try {
+            const res = await removeProduct(product.id);
+            if (res.error) {
+                throw new Error(res.error);
+            }
+            setRefreshProducts(!refreshProducts);
+            toast.success("Se eliminó correctamente el producto");
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const handleButtonCard = (data, isEdit) => {
+        if(isEdit){
             setCurrentProduct(data);
             setIsModalOpen(true)
         }else{
             handleAddToCart(data)
         }
-        console.log('dataCArd: ', data);
     }
 
     const handleAddToCart = (product) => {
@@ -201,12 +185,14 @@ const ProductPage = () => {
         <div className="mx-auto px-10 py-8 h-full gap-8">
             <div className="relative py-1">
                 <h1 className="text-3xl font-bold text-sky-700">Nuestros Productos</h1>
-                <div className='absolute right-0 top-0' onClick={() => setIsModalOpen(true)}>
-                    <ButtonWithIcon
-                        icon={<FaPlus style={{ color: 'white', fontSize: "1rem" }} />}
-                        text="Nuevo"
-                    />
-                </div>
+                {user && user.role === "seller" ?
+                    <div className='absolute right-0 top-0' onClick={() => setIsModalOpen(true)}>
+                        <ButtonWithIcon
+                            icon={<FaPlus style={{ color: 'white', fontSize: "1rem" }} />}
+                            text="Nuevo"
+                        />
+                    </div>: <></>
+                }
             </div>
             <div className="flex max-lg:flex-col gap-12 h-full">
                 <div className="lg:min-w-[30%] bg-white rounded-lg shadow-md p-6 h-fit">
@@ -260,19 +246,22 @@ const ProductPage = () => {
                                 ></InputField>
                             </div>
                         </div>
-                        <div>
-                            <h3 className="text-gray-600">Cantidad</h3>
-                            <div className="flex flex-wrap gap-2">
-                                <InputField
-                                    iconStart={<FaPerbyte style={iconStyles}/>}
-                                    placeholder="Cantidad"
-                                    type="number"
-                                    onChange={handleInputChange}
-                                    value={searchTerm.quantity}
-                                    name="quantity"
-                                ></InputField>
+                        {user && user.role === "admin" ?
+                            <div>
+                                <h3 className="text-gray-600">Vendedor</h3>
+                                <select
+                                    id="sort"
+                                    className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+                                    value={sortOption}
+                                    onChange={(e) => setSortOption(e.target.value)}>
+                                    <option value="select">Seleccionar...</option>
+                                    {sellers.map((seller) => {
+                                        return <option key={seller.id} value={seller.id}>{seller.name ? seller.name : "John Doe"}</option>;
+                                    })}
+                                </select>
                             </div>
-                        </div>
+                            :
+                            <></>}
                         <div>
                             <h3 className="text-gray-600">Rango de Precio</h3>
                             <div className="flex items-center gap-2">
@@ -345,7 +334,9 @@ const ProductPage = () => {
                             ) : (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
                                     {filteredProducts.map(product => (
-                                        <ProductCard key={product.id} product={product} onButtonClick={handleButtonCard}/>
+                                        <ProductCard key={product.id} onRemoveItem={handleRemoveItem}
+                                         product={product}
+                                         onButtonClick={handleButtonCard}/>
                                     ))}
                                 </div>
                             )}
@@ -356,7 +347,10 @@ const ProductPage = () => {
             <ProductModal
                 isOpen={isModalOpen}
                 initialData={currentProduct}
-                onClose={() => setIsModalOpen(false)}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setCurrentProduct(null);
+                }}
                 onSubmit={handleSubmit}
             />
         </div>

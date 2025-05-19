@@ -3,35 +3,24 @@ import {FaBoxes, FaEnvelope, FaEye, FaLock, FaSignInAlt} from 'react-icons/fa';
 import InputField from '../../components/input/input';
 import {toast} from "react-toastify";
 import ButtonWithIcon from '../../components/button';
+import {useNavigate} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import {login} from '../../services/authService';
+import {addUserInfo} from '../../store/slices/userSlice';
 
 const Login = () => {
     let iconStyles = {color: "#0284C7", fontSize: "1rem"};
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         email: "",
-        name: "",
         password: "",
-        confirmPassword: "",
-        role: "comprador",
     });
 
     const [errors, setErrors] = useState({
         email: '',
         password: '',
     });
-
-    const validateForm = () => {
-        let formErrors:{email: string, password: string} = {};
-        if (!formData.email || !emailRegex.test(formData.email)) {
-            formErrors.email = 'Por favor ingresa un correo electrónico válido.';
-        }
-        if (!formData.password || !passwordRegex.test(formData.password)) {
-            formErrors.password = 'La contraseña debe tener al menos 8 caracteres, incluir mayúsculas y números.';
-        }
-        return formErrors;
-    };
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -41,23 +30,30 @@ const Login = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setErrors({
             email: '',
             password: '',
         });
-        const formErrors = validateForm();
-        if (Object.keys(formErrors).length !== 0) {
-            setErrors(formErrors);
-            toast.error('Por favor corrige los errores antes de enviar.');
-            return;
+        try {
+            const result = await login(formData);
+            if (result.access_token) {
+                localStorage.setItem('token', result.access_token);
+                dispatch(
+                    addUserInfo({
+                        token: result.access_token,
+                        user: result.user,
+                    })
+                );
+                navigate('/');
+                toast.success('¡Inicio de sesión exitoso!');
+            } else {
+                toast.error(result.error);
+            }
+        } catch(e) {
+            toast.error(e.message);
         }
-        if (formData.password !== formData.confirmPassword) {
-            toast.error('Las contraseñas no coinciden')
-            return;
-        }
-
     };
 
     return (
@@ -104,6 +100,7 @@ const Login = () => {
                         </div>
                         <div>
                             <ButtonWithIcon
+                                type="submit"
                                 icon={<FaSignInAlt style={{ color: 'white', fontSize: "1rem" }} />}
                                 text="Ingresar"
                                 width="w-full"
@@ -112,8 +109,8 @@ const Login = () => {
 
                     </form>
                     <div className="mt-6 text-center text-sm text-secondary-500">
-                        ¿Aún no tienes una cuenta? <a href="/register"
-                                                  className="font-medium text-primary-600 hover:text-primary-500">Registrate</a>
+                        ¿Aún no tienes una cuenta? <a onClick={() => navigate("/register")}
+                          className="font-medium text-primary-600 hover:text-primary-500 cursor-pointer hover:underline">Registrate</a>
                     </div>
                 </div>
             </div>

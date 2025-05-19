@@ -3,17 +3,19 @@ import {useDispatch, useSelector} from 'react-redux';
 import {removeFromCart, resetCart, toggleCart} from '../../store/slices/cartSlice';
 import type {AppDispatch} from '../../store/configStore';
 import {cartDisplay} from '../../store/selectors/cartSelector';
-import React, {useState} from 'react';
+import React from 'react';
 import {FaCartPlus, FaTrash} from 'react-icons/fa';
 import {BsFillXCircleFill, BsTrash3Fill} from 'react-icons/bs';
 import ButtonWithIcon from '../button';
 import {useNavigate} from 'react-router-dom';
+import {userData} from '../../store/selectors/userSelector';
+import {BiSolidCameraOff} from 'react-icons/bi';
 
 const CartModal = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const {isOpen, items} = useSelector(cartDisplay);
-    const [userLogged, setUserLogged] = useState(false);
+    const {user} = useSelector(userData);
     if (!isOpen) return null;
     return (
         <Transition show={isOpen}>
@@ -54,9 +56,15 @@ const CartModal = () => {
                             ):(
                                 <div className="relative flex flex-col mb-4 gap-4">
                                     {items.map((product) => {
-                                        return <div className="flex gap-4 p-2 transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg bg-white rounded-lg shadow-md transition duration-300">
+                                        return <div key={product.id} className="flex gap-4 p-2 transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg bg-white rounded-lg shadow-md transition duration-300">
                                             <div className="w-20">
-                                                <img src={product.image} alt={product.name}></img>
+                                                {product.image ?
+                                                        <img src={product.image} alt={product.name}></img>
+                                                    :
+                                                    <div className="h-full w-full flex items-center justify-center border border-[#00000038] rounded-xl">
+                                                        <BiSolidCameraOff  style={{color: "gray", fontSize: "1.5rem"}}/>
+                                                    </div>
+                                                }
                                             </div>
                                             <div className="flex flex-col justify-between flex-1">
                                                 <h3 className="font-bold text-lg text-sky-700 overflow-hidden text-ellipsis whitespace-nowrap">{product.name}</h3>
@@ -90,8 +98,9 @@ const CartModal = () => {
                                                         }}
                                         />
                                     </div>
-                                    { userLogged ? (
-                                        <button className="bg-green-400 text-[1rem] w-[80%] font-bold rounded-[7px] text-white px-4 py-2 rounded hover:bg-green-600">
+                                    { user ? (
+                                        <button onClick={() => {}}
+                                            className="bg-green-400 text-[1rem] w-[80%] font-bold rounded-[7px] text-white px-4 py-2 rounded hover:bg-green-600">
                                             Ir a pagar
                                         </button>
                                     ) : (

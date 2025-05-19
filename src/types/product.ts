@@ -3,9 +3,9 @@ export interface Product{
     sku: string,
     name: string,
     price: number,
-    category: string,
     rating: number,
     image: string,
     featured: boolean,
-    stock: number
+    stock: number,
+    sellerId: number,
 }

@@ -1,28 +1,53 @@
-import React from 'react';
-import {FaStore, FaSignInAlt, FaShoppingCart} from "react-icons/fa";
+import React, {useEffect} from 'react';
+import {FaStore, FaSignInAlt, FaShoppingCart, FaSignOutAlt} from "react-icons/fa";
 import ButtonWithIcon from './button';
 import {toggleCart} from '../store/slices/cartSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import type {AppDispatch} from '../store/configStore';
 import {cartDisplay} from '../store/selectors/cartSelector';
+import {userData} from '../store/selectors/userSelector';
+import {jwtDecode} from 'jwt-decode';
+import {addUserInfo, removeUserInfo} from '../store/slices/userSlice';
+import {useNavigate} from 'react-router-dom';
 
 const Navbar: React.FC = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const {items} = useSelector(cartDisplay);
+    const {user} = useSelector(userData);
     let iconStyles = {color: "#0284C7", fontSize: "1.5rem"};
+
+    useEffect(()=> {
+        const token = localStorage.getItem("token");
+        const decodedToken = jwtDecode(token);
+        if (decodedToken) {
+            dispatch(
+                addUserInfo({
+                    token: token,
+                    user: decodedToken,
+                })
+            )
+        }
+    }, []);
+
     return (
         <header className="bg-white shadow-sm sticky top-0 z-50">
             <div className="container mx-auto px-6 py-3 flex justify-between items-center">
-                <a href="/" className="flex items-center space-x-2">
+                <a onClick={() => navigate("/")} className="flex items-center space-x-2">
                     <FaStore style={iconStyles}/>
                     <span className="text-xl font-bold text-sky-700">MarketPro</span>
                 </a>
                 <div className="flex items-center gap-4">
                     <ButtonWithIcon buttonType="textButton"
-                                    className="text-sky-700"
-                                    href="/login"
-                                    icon={<FaSignInAlt style={{color: "#0284C7", fontSize: "1rem"}}/>}
-                                    text="Ingresar"
+                        className="text-sky-700"
+                        href={"/login"} onClick={() => {
+                            if (user) {
+                                localStorage.removeItem("token");
+                                dispatch(removeUserInfo());
+                            }
+                        }}
+                        icon={user ? <FaSignOutAlt style={{color: "#0284C7", fontSize: "1rem"}}/> : <FaSignInAlt style={{color: "#0284C7", fontSize: "1rem"}}/>}
+                        text={user ? "Cerrar Sesión" : "Ingresar"}
                     />
                     <div className="h-5 w-[1px] bg-[rgb(199,202,206)]"></div>
 

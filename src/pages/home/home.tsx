@@ -1,7 +1,9 @@
 import React from "react";
 import "./home.css"
 import {FaBook, FaCartPlus, FaHome, FaMobile, FaSearch, FaTshirt} from 'react-icons/fa';
+import {useNavigate} from 'react-router-dom';
 const Home = () => {
+    const navigate = useNavigate();
     let iconStyles = { color: "#0284C7", fontSize: "1rem" };
     let iconCards = { color: "#1F2937", fontSize: "3rem" };
 
@@ -12,7 +14,7 @@ const Home = () => {
                     <div className="md:w-1/2 mb-10 md:mb-0">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">Descubre productos increíbles</h1>
                         <p className="text-xl mb-8 opacity-90">La forma más simple de comprar y vender en línea.</p>
-                        <a href={'/products'}>
+                        <a onClick={() => navigate("/products")}>
                             <button
                                 className="px-6 py-3 bg-white text-sky-600 font-medium rounded-lg hover:bg-gray-100 transition shadow-lg flex items-center gap-2">
                                 <FaSearch style={iconStyles}/><span>Explorar ahora</span>
@@ -73,7 +75,7 @@ const Home = () => {
                             }
                         ].map((product, index) => (
                             <div key={index} className="bg-white rounded-xl overflow-hidden shadow-md hover-scale transition">
-                                <img
+                            <img
                                     src={product.img}
                                     alt={product.name}
                                     className="w-full h-48 object-cover"

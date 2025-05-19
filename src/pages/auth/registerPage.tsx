@@ -4,6 +4,7 @@ import InputField from '../../components/input/input';
 import {toast} from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import ButtonWithIcon from '../../components/button';
+import {registerUser} from '../../services/userService';
 
 const RegisterPage = () => {
     let iconStyles = {color: "#0284C7", fontSize: "1rem"};
@@ -16,7 +17,7 @@ const RegisterPage = () => {
         name: "",
         password: "",
         confirmPassword: "",
-        role: "comprador",
+        role: "buyer",
     });
 
     const [errors, setErrors] = useState({
@@ -54,16 +55,25 @@ const RegisterPage = () => {
         });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         setErrors({
-                name: '',
-                email: '',
-                password: '',
-            });
+            name: '',
+            email: '',
+            password: '',
+        });
         const formErrors = validateForm();
         if (Object.keys(formErrors).length === 0) {
-            toast.success('Formulario enviado con éxito!');
+            try {
+                const result = await registerUser(formData);
+                if (result.error) {
+                    toast.error(result.message);
+                    throw new Error(`${result.message} ${result}`);
+                }
+                toast.success(result.message);
+                navigate("/login");
+            } catch (e) {
+                console.error("Ocurrió un error", e);
+            }
         } else {
             setErrors(formErrors);
             toast.error('Por favor corrige los errores antes de enviar.');
@@ -73,7 +83,6 @@ const RegisterPage = () => {
             toast.error('Las contraseñas no coinciden')
             return;
         }
-        navigate("/");
     };
 
     return (
@@ -147,17 +156,17 @@ const RegisterPage = () => {
                         <div className="flex flex-start gap-4">
                             <button
                                 type="button"
-                                onClick={() => handleRoleChange('comprador')}
+                                onClick={() => handleRoleChange('buyer')}
                                 className={`px-4 py-2 rounded-lg ${
-                                    formData.role === 'comprador' ? 'bg-sky-700 text-white' : 'bg-gray-200 text-gray-700'
+                                    formData.role === 'buyer' ? 'bg-sky-700 text-white' : 'bg-gray-200 text-gray-700'
                                 } transition-colors duration-200`}>
                                 Comprador
                             </button>
                             <button
                                 type="button"
-                                onClick={() => handleRoleChange('vendedor')}
+                                onClick={() => handleRoleChange('seller')}
                                 className={`px-4 py-2 rounded-lg ${
-                                    formData.role === 'vendedor' ? 'bg-sky-700 text-white' : 'bg-gray-200 text-gray-700'
+                                    formData.role === 'seller' ? 'bg-sky-700 text-white' : 'bg-gray-200 text-gray-700'
                                 } transition-colors duration-200`}>
                                 Vendedor
                             </button>
@@ -174,18 +183,18 @@ const RegisterPage = () => {
                             </div>
                         </div>
                         <div>
-                            <ButtonWithIcon
+                            <ButtonWithIcon onClick={handleSubmit}
                                 icon={<FaSignInAlt style={{ color: 'white', fontSize: "1rem" }} />}
                                 text="Ingresar"
                                 width="w-full"
-                                type="submit"
+                                type="button"
                             />
                         </div>
 
                     </form>
                     <div className="mt-6 text-center text-sm text-secondary-500">
-                        ¿Ya tienes una cuenta? <a href="/login"
-                                                  className="font-medium text-primary-600 hover:text-primary-500">Inicia
+                        ¿Ya tienes una cuenta? <a onClick={() => navigate("/login")}
+                            className="font-medium cursor-pointer hover:underline text-primary-600 hover:text-primary-500">Inicia
                         sesión</a>
                     </div>
                 </div>

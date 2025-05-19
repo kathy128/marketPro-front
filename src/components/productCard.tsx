@@ -1,27 +1,30 @@
 import React from 'react';
-import {FaStar, FaShoppingCart, FaPencilAlt} from 'react-icons/fa';
+import {FaStar, FaShoppingCart, FaPencilAlt, FaTrashAlt} from 'react-icons/fa';
 import ButtonWithIcon from './button';
+import {BiSolidCameraOff} from 'react-icons/bi';
+import {userData} from '../store/selectors/userSelector';
+import {useSelector} from 'react-redux';
 
-const ProductCard = ({product, type, onButtonClick}) => {
-    const translatedCategory = {
-        clothing: "ropa",
-        books: "libros",
-        electronics: "electrónicos",
-        sports: "deportivos",
-        home: "hogar",
-    }
+const ProductCard = ({product, onButtonClick, onRemoveItem}) => {
+    const {user} = useSelector(userData);
 
     return (
         <div style={{
-            minHeight: "360px"
+            minHeight: user && user.role === "admin" ? "300px" : "360px"
         }}
             className="transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg bg-white rounded-lg shadow-md overflow-hidden transition duration-300 relative">
-            <div className="relative h-48 overflow-hidden">
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                />
+            <div className={"relative overflow-hidden h-48"}>
+                {product.image ? (
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                    />
+                ):(
+                    <div className="h-full w-full flex items-center justify-center border border-[#00000038] rounded-t-xl">
+                        <BiSolidCameraOff  style={{color: "gray", fontSize: "1.5rem"}}/>
+                    </div>
+                )}
                 {product.stock < 10 && (
                     <div
                         className="absolute bottom-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">
@@ -49,17 +52,23 @@ const ProductCard = ({product, type, onButtonClick}) => {
                 </div>
 
                 <div className="flex justify-between items-center text-sm text-gray-500">
-                    <span>{translatedCategory[product.category]}</span>
+                    <span></span>
                     <span>{product.stock} en stock</span>
                 </div>
 
                 <div className="mt-4 flex justify-between">
-                    {type === 'seller' ? (
-                        <ButtonWithIcon
-                            icon={<FaPencilAlt style={{color: 'white'}}/>}
-                            text="Editar"
-                            onClick={()=> onButtonClick(product)}/>
-                    ) : (
+                    {user && user.role === 'seller' ? (
+                        <>
+                            <ButtonWithIcon
+                                icon={<FaPencilAlt style={{color: 'white'}}/>}
+                                text="Editar"
+                                onClick={()=> onButtonClick(product, true)}/>
+                            <ButtonWithIcon buttonColor="bg-rose-700 hover:bg-rose-800"
+                                icon={<FaTrashAlt style={{color: 'white'}}/>}
+                                text="Eliminar"
+                                onClick={()=> onRemoveItem(product)}/>
+                        </>
+                    ) : user && user.role === 'admin' ? <></> : (
                         <ButtonWithIcon
                             icon={<FaShoppingCart style={{color: 'white'}}/>}
                             text="Comprar"

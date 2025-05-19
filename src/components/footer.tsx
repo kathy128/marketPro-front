@@ -26,13 +26,13 @@ const Footer = () => {
                         <div>
                             <h3 className="font-semibold text-lg mb-4">Recursos</h3>
                             <ul className="space-y-2">
-                                <li><a href="#"
+                                <li><a
                                        className="text-secondary-300 hover:text-white transition">Documentación</a>
                                 </li>
-                                <li><a href="#" className="text-secondary-300 hover:text-white transition">Guías</a>
+                                <li><a className="text-secondary-300 hover:text-white transition">Guías</a>
                                 </li>
-                                <li><a href="#" className="text-secondary-300 hover:text-white transition">Blog</a></li>
-                                <li><a href="#" className="text-secondary-300 hover:text-white transition">Webinars</a>
+                                <li><a className="text-secondary-300 hover:text-white transition">Blog</a></li>
+                                <li><a className="text-secondary-300 hover:text-white transition">Webinars</a>
                                 </li>
                             </ul>
                         </div>
@@ -61,9 +61,9 @@ const Footer = () => {
                         <p className="text-secondary-400 mb-4 md:mb-0">© 2023 MarketPro. Todos los derechos
                             reservados.</p>
                         <div className="flex space-x-6">
-                            <a href="#" className="text-secondary-400 hover:text-white transition">Términos</a>
-                            <a href="#" className="text-secondary-400 hover:text-white transition">Privacidad</a>
-                            <a href="#" className="text-secondary-400 hover:text-white transition">Cookies</a>
+                            <a className="text-secondary-400 hover:text-white transition">Términos</a>
+                            <a className="text-secondary-400 hover:text-white transition">Privacidad</a>
+                            <a className="text-secondary-400 hover:text-white transition">Cookies</a>
                         </div>
                     </div>
                 </div>
