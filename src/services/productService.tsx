@@ -1,4 +1,6 @@
-export const createProduct = async (body) => {
+import type {Product} from '../types/product';
+
+export const createProduct = async (body:any) => {
     const formData = new FormData();
     for (let key in body) {
         formData.append(key, body[key]);
@@ -19,7 +21,7 @@ export const createProduct = async (body) => {
     return await response.json();;
 }
 
-export const updateProduct = async (id, body) => {
+export const updateProduct = async (id: any, body: any) => {
     const formData = new FormData();
     for (let key in body) {
         if (key !== id && body[key] !== null) {
@@ -41,7 +43,7 @@ export const updateProduct = async (id, body) => {
     }
     return await response.json();;
 }
-export const removeProduct = async (id) => {
+export const removeProduct = async (id: number) => {
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/products/${id}`,
         {
@@ -57,7 +59,7 @@ export const removeProduct = async (id) => {
     return await response.json();
 }
 
-export const getProducts = async (extraUrl) => {
+export const getProducts = async (extraUrl: any) => {
     try {
         const response = await fetch(
             `${import.meta.env.VITE_API_URL}/products${extraUrl}`,
@@ -78,8 +80,8 @@ export const getProducts = async (extraUrl) => {
     }
 }
 
-const transformData = (products) => {
-    return products.map((product) => ({
+const transformData = (products: Product[]) => {
+    return products.map((product: Product) => ({
         ...product,
         price: Number(product.price),
         rating: Number(product.rating)

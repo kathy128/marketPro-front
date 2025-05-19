@@ -1,6 +1,6 @@
 import {createSelector} from '@reduxjs/toolkit';
 
-const userState = (state) => state.user;
+const userState = (state: any) => state.user;
 
 export const userData = createSelector(
     [userState],

@@ -21,10 +21,10 @@ function App() {
                     <CartModal />
                     <Routes>
                         <Route path="/" element={<Home/>}/>
-                        <Route path="/login" element={<Login type="login"/>}/>
+                        <Route path="/login" element={<Login/>}/>
                         <Route
                             path="/register"
-                            element={<RegisterPage type="register"/>}
+                            element={<RegisterPage/>}
                         />
                         <Route path="/products" element={<ProductPage/>}/>
                     </Routes>

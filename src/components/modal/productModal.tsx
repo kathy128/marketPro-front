@@ -2,7 +2,7 @@ import {Dialog, Transition} from '@headlessui/react';
 import React, { useState, useEffect} from 'react';
 import InputField from '../input/input';
 
-const ProductModal = ({isOpen, onClose, onSubmit, initialData = null}) => {
+const ProductModal: React.FC<any> = ({isOpen, onClose, onSubmit, initialData = null}) => {
     const [form, setForm] = useState({
         name: '',
         sku: '',
@@ -23,7 +23,7 @@ const ProductModal = ({isOpen, onClose, onSubmit, initialData = null}) => {
         }
     }, [initialData]);
 
-    const handleChange = (e) => {
+    const handleChange = (e: any) => {
         const {name, value, files} = e.target;
         if (name === 'image') {
             setForm((prev) => ({...prev, image: files[0]}));
@@ -32,7 +32,7 @@ const ProductModal = ({isOpen, onClose, onSubmit, initialData = null}) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
         onSubmit(form, initialData === null);
     };

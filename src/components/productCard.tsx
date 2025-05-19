@@ -1,11 +1,11 @@
-import React from 'react';
 import {FaStar, FaShoppingCart, FaPencilAlt, FaTrashAlt} from 'react-icons/fa';
 import ButtonWithIcon from './button';
 import {BiSolidCameraOff} from 'react-icons/bi';
 import {userData} from '../store/selectors/userSelector';
 import {useSelector} from 'react-redux';
+import React from 'react';
 
-const ProductCard = ({product, onButtonClick, onRemoveItem}) => {
+const ProductCard: React.FC<any> = ({product, onButtonClick, onRemoveItem}) => {
     const {user} = useSelector(userData);
 
     return (

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {FaStore, FaSignInAlt, FaShoppingCart, FaSignOutAlt} from "react-icons/fa";
 import ButtonWithIcon from './button';
 import {toggleCart} from '../store/slices/cartSlice';
@@ -18,7 +18,8 @@ const Navbar: React.FC = () => {
     let iconStyles = {color: "#0284C7", fontSize: "1.5rem"};
 
     useEffect(()=> {
-        const token = localStorage.getItem("token");
+        const token: string | null = localStorage.getItem("token");
+        if(!token) return;
         const decodedToken = jwtDecode(token);
         if (decodedToken) {
             dispatch(

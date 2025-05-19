@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {FaBoxes, FaEnvelope, FaEye, FaLock, FaSignInAlt} from 'react-icons/fa';
 import InputField from '../../components/input/input';
 import {toast} from "react-toastify";
@@ -22,7 +22,7 @@ const Login = () => {
         password: '',
     });
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         const {name, value} = e.target;
         setFormData({
             ...formData,
@@ -30,7 +30,7 @@ const Login = () => {
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         setErrors({
             email: '',
@@ -51,7 +51,7 @@ const Login = () => {
             } else {
                 toast.error(result.error);
             }
-        } catch(e) {
+        } catch(e: any) {
             toast.error(e.message);
         }
     };

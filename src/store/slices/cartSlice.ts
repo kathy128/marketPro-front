@@ -47,11 +47,6 @@ export const cartSlice = createSlice({
         toggleCart(state) {
             state.isOpen = !state.isOpen;
         },
-        deleteItem: (state, action) => {
-            state.products = state.products.filter(
-                (item) => item.id !== action.payload
-            );
-        },
         resetCart: (state) => {
             state.items = [];
         },

@@ -3,7 +3,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {removeFromCart, resetCart, toggleCart} from '../../store/slices/cartSlice';
 import type {AppDispatch} from '../../store/configStore';
 import {cartDisplay} from '../../store/selectors/cartSelector';
-import React from 'react';
 import {FaCartPlus, FaTrash} from 'react-icons/fa';
 import {BsFillXCircleFill, BsTrash3Fill} from 'react-icons/bs';
 import ButtonWithIcon from '../button';
@@ -55,7 +54,7 @@ const CartModal = () => {
                                 </div>
                             ):(
                                 <div className="relative flex flex-col mb-4 gap-4">
-                                    {items.map((product) => {
+                                    {items.map((product:any) => {
                                         return <div key={product.id} className="flex gap-4 p-2 transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg bg-white rounded-lg shadow-md transition duration-300">
                                             <div className="w-20">
                                                 {product.image ?

@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {FaEye, FaEyeSlash} from 'react-icons/fa';
 
-const InputField = ({
+const InputField: any = ({
                         iconStart,
                         iconEnd,
                         placeholder,
@@ -12,7 +12,7 @@ const InputField = ({
                         onChange,
                         className = "",
                         ...props
-                    }) => {
+                    }: any) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     let iconStyles = {color: "#0284C7", fontSize: "1rem"};
 

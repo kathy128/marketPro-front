@@ -1,4 +1,3 @@
-import React from "react";
 import "./home.css"
 import {FaBook, FaCartPlus, FaHome, FaMobile, FaSearch, FaTshirt} from 'react-icons/fa';
 import {useNavigate} from 'react-router-dom';

@@ -1,4 +1,3 @@
-import React from "react";
 import {FaStore, FaMapMarkerAlt,
     FaPhoneAlt, FaLinkedin, FaGithub,
     FaEnvelope} from 'react-icons/fa';

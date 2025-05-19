@@ -1,5 +1,5 @@
 
-export const registerUser = async (formData) => {
+export const registerUser = async (formData: any) => {
     try {
         const response = await fetch(
             `${import.meta.env.VITE_API_URL}/users/register`,

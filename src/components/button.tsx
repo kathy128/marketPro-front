@@ -1,11 +1,12 @@
-import React from 'react';
 import {useNavigate} from 'react-router-dom';
 interface ButtonIconsProps {
     href?: string;
     icon: React.ReactNode;
     text?: string;
     width?: string;
+    buttonColor?: string
     className?: string;
+    buttonType?: string
     type?: "button" | "submit" | "reset";
     onClick?: () => void;
 }

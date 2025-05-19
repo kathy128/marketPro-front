@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {FaBoxes, FaEnvelope, FaEye, FaLock, FaSignInAlt, FaUser} from 'react-icons/fa';
 import InputField from '../../components/input/input';
 import {toast} from "react-toastify";
@@ -27,7 +27,7 @@ const RegisterPage = () => {
     });
 
     const validateForm = () => {
-        let formErrors:{name: string, email: string, password: string} = {};
+        let formErrors:{name?: string, email?: string, password?: string} = {};
         if (!formData.name || !nameRegex.test(formData.name)) {
             formErrors.name = 'El nombre solo puede contener letras y espacios.';
         }
@@ -40,7 +40,7 @@ const RegisterPage = () => {
         return formErrors;
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         const {name, value} = e.target;
         setFormData({
             ...formData,
@@ -48,7 +48,7 @@ const RegisterPage = () => {
         });
     };
 
-    const handleRoleChange = (role) => {
+    const handleRoleChange = (role: any) => {
         setFormData({
             ...formData,
             role: role,
@@ -71,11 +71,11 @@ const RegisterPage = () => {
                 }
                 toast.success(result.message);
                 navigate("/login");
-            } catch (e) {
+            } catch (e: any) {
                 console.error("Ocurrió un error", e);
             }
         } else {
-            setErrors(formErrors);
+            setErrors(formErrors as any);
             toast.error('Por favor corrige los errores antes de enviar.');
             return;
         }

@@ -1,4 +1,3 @@
-import React from 'react';
 import ProductCard from '../../components/productCard';
 import InputField from '../../components/input/input';
 import {FaHashtag, FaPlus, FaSearch} from 'react-icons/fa';
@@ -11,8 +10,9 @@ import {toast} from "react-toastify";
 import {createProduct, getProducts, removeProduct, updateProduct} from '../../services/productService';
 import {userData} from '../../store/selectors/userSelector';
 import {getSellers} from '../../services/userService';
+import type {Product} from '../../types/product';
+import {useEffect, useState} from 'react';
 
-const {useState, useEffect} = React;
 
 const ProductPage = () => {
     let iconStyles = {color: "#A2A9B4", fontSize: "1rem"};
@@ -26,7 +26,7 @@ const ProductPage = () => {
     const [priceRange, setPriceRange] = useState([0, 1000]);
     const [sortOption, setSortOption] = useState('select');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentProduct, setCurrentProduct] = useState< | null>(null);
+    const [currentProduct, setCurrentProduct] = useState< Product | null>(null);
     const {user} = useSelector(userData);
     const [refreshProducts, setRefreshProducts] = useState(false);
     const [searchTerm, setSearchTerm] = useState({
@@ -34,13 +34,13 @@ const ProductPage = () => {
         quantity: '',
         sku: '',
     });
-    const fetchProducts = async (extraUrl) => {
+    const fetchProducts = async (extraUrl: any) => {
         if (!fetchingProducts) {
             setFetchProducts(true);
             setLoading(true);
             let products = await getProducts(extraUrl);
-            setProducts(products);
-            setFilteredProducts(products);
+            setProducts(products as any);
+            setFilteredProducts(products as any);
             setLoading(false);
             setFetchProducts(false);
         }
@@ -74,46 +74,46 @@ const ProductPage = () => {
     useEffect(() => {
         let result = [...products];
 
-        result = result.filter(product =>
+        result = result.filter((product: Product) =>
             product.price >= priceRange[0] && product.price <= priceRange[1]
         );
         if (searchTerm) {
             if (searchTerm.name) {
-                result = result.filter(product =>
+                result = result.filter((product: Product) =>
                     product.name.toLowerCase().includes(searchTerm.name.toLowerCase())
                 );
             } else if (searchTerm.sku) {
-                result = result.filter(product =>
+                result = result.filter((product: Product) =>
                     product.sku.includes(searchTerm.sku.toLowerCase()));
             } else {
-                result = result.filter(product =>
+                result = result.filter((product: Product) =>
                     product.stock.toString().includes(searchTerm.quantity));
             }
         }
         switch (sortOption) {
             case 'price-asc':
-                result.sort((a, b) => a.price - b.price);
+                result.sort((a: any, b: any) => a.price - b.price);
                 break;
             case 'price-desc':
-                result.sort((a, b) => b.price - a.price);
+                result.sort((a: any, b: any) => b.price - a.price);
                 break;
             case 'rating':
-                result.sort((a, b) => b.rating - a.rating);
+                result.sort((a: any, b: any) => b.rating - a.rating);
                 break;
             case 'featured':
-                result.sort((a, b) => (b.featured === a.featured) ? 0 : b.featured ? -1 : 1);
+                result.sort((a: any, b: any) => (b.featured === a.featured) ? 0 : b.featured ? -1 : 1);
                 break;
             default:
                 const sellerId = Number(sortOption);
                 if (!isNaN(sellerId)) {
-                    result = result.filter((product) => product.sellerId === sellerId);
+                    result = result.filter((product: Product) => product.sellerId === sellerId);
                 }
                 break;
         }
 
         setFilteredProducts(result);
     }, [products, priceRange, searchTerm, sortOption]);
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         const {name, value} = e.target;
         setSearchTerm({
             ...searchTerm,
@@ -121,14 +121,13 @@ const ProductPage = () => {
         });
     };
 
-    const handlePriceChange = (e, index) => {
+    const handlePriceChange = (e: any, index: number) => {
         const newPriceRange = [...priceRange];
         newPriceRange[index] = Number(e.target.value);
         setPriceRange(newPriceRange);
     };
 
-    const handleSubmit = async (data, isCreate) => {
-        console.log('Producto enviado:', data);
+    const handleSubmit = async (data: any, isCreate: boolean) => {
         try {
             let res;
             if (isCreate) {
@@ -137,7 +136,8 @@ const ProductPage = () => {
                     sellerId: user.id
                 });
             } else {
-                res = await updateProduct(currentProduct.id, {
+                if(!currentProduct)return;
+                res = await updateProduct(currentProduct!.id, {
                     ...data,
                     sellerId: user.id
                 });
@@ -150,13 +150,12 @@ const ProductPage = () => {
             } else {
                 throw new Error(res.error);
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
         }
     };
 
-    const handleRemoveItem = async (product) => {
-        console.log(product);
+    const handleRemoveItem = async (product: any) => {
         try {
             const res = await removeProduct(product.id);
             if (res.error) {
@@ -164,12 +163,12 @@ const ProductPage = () => {
             }
             setRefreshProducts(!refreshProducts);
             toast.success("Se eliminó correctamente el producto");
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
         }
     };
 
-    const handleButtonCard = (data, isEdit) => {
+    const handleButtonCard = (data: any, isEdit: boolean) => {
         if(isEdit){
             setCurrentProduct(data);
             setIsModalOpen(true)
@@ -178,7 +177,7 @@ const ProductPage = () => {
         }
     }
 
-    const handleAddToCart = (product) => {
+    const handleAddToCart = (product: any) => {
         dispatch(addToCart(product));
     };
     return (
@@ -224,7 +223,7 @@ const ProductPage = () => {
                                 id="sort"
                                 className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
                                 value={sortOption}
-                                onChange={(e) => setSortOption(e.target.value)}>
+                                onChange={(e: any) => setSortOption(e.target.value)}>
                                 <option value="select">Seleccionar...</option>
                                 <option value="price-asc">Precio: Menor a Mayor</option>
                                 <option value="price-desc">Precio: Mayor a Menor</option>
@@ -253,9 +252,9 @@ const ProductPage = () => {
                                     id="sort"
                                     className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500/50"
                                     value={sortOption}
-                                    onChange={(e) => setSortOption(e.target.value)}>
+                                    onChange={(e: any) => setSortOption(e.target.value)}>
                                     <option value="select">Seleccionar...</option>
-                                    {sellers.map((seller) => {
+                                    {sellers.map((seller: any) => {
                                         return <option key={seller.id} value={seller.id}>{seller.name ? seller.name : "John Doe"}</option>;
                                     })}
                                 </select>
@@ -271,7 +270,7 @@ const ProductPage = () => {
                                     max="1000"
                                     step="10"
                                     value={priceRange[0]}
-                                    onChange={(e) => handlePriceChange(e, 0)}
+                                    onChange={(e: any) => handlePriceChange(e, 0)}
                                     className="w-full"
                                 />
                                 <input
@@ -280,7 +279,7 @@ const ProductPage = () => {
                                     max="1000"
                                     step="10"
                                     value={priceRange[1]}
-                                    onChange={(e) => handlePriceChange(e, 1)}
+                                    onChange={(e:any) => handlePriceChange(e, 1)}
                                     className="w-full"
                                 />
                             </div>
@@ -333,7 +332,7 @@ const ProductPage = () => {
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-                                    {filteredProducts.map(product => (
+                                    {filteredProducts.map((product: any) => (
                                         <ProductCard key={product.id} onRemoveItem={handleRemoveItem}
                                          product={product}
                                          onButtonClick={handleButtonCard}/>

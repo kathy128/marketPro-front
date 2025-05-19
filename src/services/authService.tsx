@@ -7,11 +7,10 @@ export const getTokenData = () => {
     try {
         const decoded = jwtDecode(token);
         const currentTime = Date.now() / 1000;
-        if (decoded.exp < currentTime) {
+        if (decoded?.exp && decoded.exp < currentTime) {
             localStorage.removeItem("token");
             return null;
         }
-        console.log('decoded', decoded)
         return {
             token,
            /* user: {
@@ -26,7 +25,7 @@ export const getTokenData = () => {
         return null;
     }
 };
-export const login = async (formData) => {
+export const login = async (formData: any) => {
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/login`,
         {
